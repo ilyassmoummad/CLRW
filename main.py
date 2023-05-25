@@ -57,7 +57,7 @@ criterion_linear = nn.CrossEntropyLoss()
 
 if args.wandb:
         os.makedirs(args.tmpdir, exist_ok=True)
-        wandb.init(project=args.projname, entity="brain-imt", dir=args.tmpdir) #['GSP', 'sandbox']
+        wandb.init(project=args.projname, entity=args.entity, dir=args.tmpdir) #['GSP', 'sandbox']
         wandb.config.update(args)
 
 backbone = cifar10_train_backbone(train_loader, backbone, criterion_ssl, optimizer_ssl, args.epochs)

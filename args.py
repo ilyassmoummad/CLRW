@@ -3,11 +3,12 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--wandb", action='store_true') #use for wandb
+parser.add_argument("--entity", type=str, default='') #entity name for wandb
 parser.add_argument("--datadir", type=str, default='.') #path to save downloaded dataset
 parser.add_argument("--dataset", type=str, default='cifar10') #dataset to train on ['cifar10']
 parser.add_argument("--nworkers", type=int, default=4) #number of workers for the dataloader
 parser.add_argument("--model", type=str, default='resnet18') #model to train, check model_dict in models.py
-parser.add_argument("--projname", type=str, default='sandbox') #project name ['GSP23','sandbox']
+parser.add_argument("--projname", type=str, default='') #project name for wandb ['GSP23','sandbox']
 parser.add_argument("--tmpdir", type=str, default='.') #tmp dir
 parser.add_argument("--device", type=str, default='cuda:0') #device to train on
 parser.add_argument("--bs", type=int, default=256) #batch size for representation learning
