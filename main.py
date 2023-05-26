@@ -5,7 +5,7 @@ from utils import TwoCropTransform
 from models import LinearClassifier
 from train import cifar10_train_backbone
 from train_utils import cifar10_train_linear
-from losses import RandomWalkLoss
+from losses import RandomWalkLoss, SupConLoss
 from args import args
 from models import RWResNet, model_dict
 import os
@@ -19,11 +19,11 @@ os.makedirs(args.datadir, exist_ok=True)
 os.makedirs(args.tmpdir, exist_ok=True)
 
 if args.autoaugment:
-        train_transform = transforms.Compose([
-                transforms.ToTensor(),
+        train_transform = transforms.Compose([      
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomResizedCrop(size=32, scale=(0.2, 1.)),
                 transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),    
+                transforms.ToTensor(),
                 transforms.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)),
                 transforms.RandomErasing(0.1)
         ])
