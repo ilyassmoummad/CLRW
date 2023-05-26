@@ -3,6 +3,8 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--wandb", action='store_true') #use for wandb
+parser.add_argument("--simclr", action='store_true') #use SimCLR instead of our proposed CLRW
+parser.add_argument("--autoaugment", action='store_true') #use Torchvision's AutoAugment as DA
 parser.add_argument("--entity", type=str, default='') #entity name for wandb
 parser.add_argument("--datadir", type=str, default='.') #path to save downloaded dataset
 parser.add_argument("--dataset", type=str, default='cifar10') #dataset to train on ['cifar10']

@@ -18,16 +18,26 @@ NUM_CLASSES = 10 if args.dataset == 'cifar10' else None
 os.makedirs(args.datadir, exist_ok=True)
 os.makedirs(args.tmpdir, exist_ok=True)
 
-train_transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.RandomResizedCrop(size=32, scale=(0.2, 1.)),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomApply([
-            transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)
-        ], p=0.8),
-        transforms.RandomGrayscale(p=0.2),      
-        transforms.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)),
-    ])
+if args.autoaugment:
+        train_transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomResizedCrop(size=32, scale=(0.2, 1.)),
+                transforms.AutoAugment(policy=transforms.autoaugment.AutoAugmentPolicy.CIFAR10),    
+                transforms.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)),
+                transforms.RandomErasing(0.1)
+        ])
+else:
+        train_transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.RandomResizedCrop(size=32, scale=(0.2, 1.)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomApply([
+                transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)
+                ], p=0.8),
+                transforms.RandomGrayscale(p=0.2),      
+                transforms.Normalize(mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)),
+        ])
 
 train_dataset = datasets.CIFAR10(root=args.datadir,
                         transform=TwoCropTransform(train_transform),
@@ -47,7 +57,10 @@ optimizer_ssl = torch.optim.SGD(optim_params, lr=args.lr,
                         momentum=args.momentum,
                         weight_decay=args.wd)
 
-criterion_ssl = RandomWalkLoss()
+if args.simclr:
+        criterion_ssl = SupConLoss(args.tau)
+else:
+        criterion_ssl = RandomWalkLoss(args.tau)
 
 optimizer_linear = torch.optim.SGD(classifier.parameters(),
                           lr=args.lr2,
