@@ -58,7 +58,7 @@ optimizer_ssl = torch.optim.SGD(optim_params, lr=args.lr,
                         weight_decay=args.wd)
 
 if args.simclr:
-        criterion_ssl = SupConLoss(args.tau)
+        criterion_ssl = SupConLoss(args.tau, device=args.device)
 else:
         criterion_ssl = RandomWalkLoss(args.tau)
 
