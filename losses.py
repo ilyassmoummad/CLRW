@@ -3,13 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 from args import args
 
-import math
-def off_diagonal(x):
-    # return a flattened view of the off-diagonal elements of a square matrix
-    n, m = x.shape
-    return x.flatten()[:-1].view(n - 1, n + 1)[:, 1:].flatten()
-
-
 class RandomWalkLoss(nn.Module):
     def __init__(self, temperature=0.4):
         super(RandomWalkLoss, self).__init__()
