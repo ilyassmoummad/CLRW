@@ -17,7 +17,7 @@ class RandomWalkLoss(nn.Module):
         self.temperature = temperature
         self.rw_target = torch.zeros((2*args.bs, 2*args.bs)).scatter_(0, torch.arange(2*args.bs).roll(args.bs).unsqueeze(0), 1).to(args.device) #cuda()
         #precomputing indices of the upper triangular part 
-        ind = torch.triu_indices((2*args.bs, 2*args.bs))
+        ind = torch.triu_indices(2*args.bs, 2*args.bs)
         self.indices = (ind[0,:],ind[1,:])
         #precomputing the target matrix
         self.targetM = self.rw_target[self.indices]
