@@ -46,7 +46,7 @@ train_dataset = datasets.CIFAR10(root=args.datadir,
 
 train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=args.bs, shuffle=True,
-        num_workers=args.nworkers, pin_memory=True, drop_last=True)
+        num_workers=args.nworkers, pin_memory=args.pin_memory, drop_last=True)
 
 backbone = RWResNet(name=args.model, head='mlp', out_dim=OUT_DIM).to(args.device)
 classifier = LinearClassifier(name=args.model, num_classes=NUM_CLASSES).to(args.device)
@@ -100,9 +100,9 @@ val_dataset = datasets.CIFAR10(root=args.datadir,
 
 train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=args.bs2, shuffle=True,
-        num_workers=args.nworkers, pin_memory=True)
+        num_workers=args.nworkers, pin_memory=args.pin_memory)
 val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=args.bs2, shuffle=False,
-        num_workers=args.nworkers, pin_memory=True)
+        num_workers=args.nworkers, pin_memory=args.pin_memory)
 
 backbone, classifier, acc = cifar10_train_linear(train_loader, val_loader, backbone, classifier, criterion_linear, optimizer_linear, args.epochs2)

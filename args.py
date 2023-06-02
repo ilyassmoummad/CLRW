@@ -13,6 +13,7 @@ parser.add_argument("--model", type=str, default='resnet18') #model to train, ch
 parser.add_argument("--projname", type=str, default='') #project name for wandb ['GSP23','sandbox']
 parser.add_argument("--tmpdir", type=str, default='.') #tmp dir
 parser.add_argument("--device", type=str, default='cuda:0') #device to train on
+parser.add_argument("--pin_memory", action='store_true') #use for wandb
 parser.add_argument("--bs", type=int, default=256) #batch size for representation learning
 parser.add_argument("--bs2", type=int, default=256) #batch size for lincls
 parser.add_argument("--wd", type=float, default=5e-4) #weight decay #avant : 1e-4
