@@ -7,7 +7,6 @@ import math
 def off_diagonal(x):
     # return a flattened view of the off-diagonal elements of a square matrix
     n, m = x.shape
-    assert n == m
     return x.flatten()[:-1].view(n - 1, n + 1)[:, 1:].flatten()
 
 
@@ -17,9 +16,14 @@ class RandomWalkLoss(nn.Module):
 
         self.temperature = temperature
         self.rw_target = torch.zeros((2*args.bs, 2*args.bs)).scatter_(0, torch.arange(2*args.bs).roll(args.bs).unsqueeze(0), 1).to(args.device) #cuda()
+        #precomputing indices of the upper triangular part 
+        ind = torch.triu_indices((2*args.bs, 2*args.bs))
+        self.indices = (ind[0,:],ind[1,:])
+        #precomputing the target matrix
+        self.targetM = self.rw_target[self.indices]
 
     def forward(self, z1_features, z2_features, labels=None):
-        device = args.device #(torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu'))
+        device = args.device 
 
         z = torch.cat((z1_features, z2_features), dim=0)
 
@@ -34,12 +38,9 @@ class RandomWalkLoss(nn.Module):
 
         degree = torch.diag(sim.sum(dim=1))
 
-        #rw = torch.inverse(degree) @ sim
-        #laplacian = degree - sim
-
         rw = torch.diag(1./(sim.sum(dim=1))) @ sim
 
-        loss = (off_diagonal(rw)-off_diagonal(self.rw_target)).pow(2).sum()
+        loss = (rw[self.indices]-self.targetM).pow(2).sum()
 
         return loss
     
