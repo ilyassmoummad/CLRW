@@ -10,11 +10,11 @@ def cifar10_train_backbone_epoch(train_loader, backbone, criterion, optimizer):
     epoch_loss = 0.0
 
     for idx, (images, labels) in enumerate(train_loader):
-        if torch.cuda.is_available():
-            x1 = images[0].to(args.device)
-            x2 = images[1].to(args.device)
-            labels = labels.to(args.device)
-            
+        
+        x1 = images[0].to(args.device)
+        x2 = images[1].to(args.device)
+        labels = labels.to(args.device)
+        
         # compute loss
         _, p1 = backbone(x1); _, p2 = backbone(x2)
         loss = criterion(p1, p2)
