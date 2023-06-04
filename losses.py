@@ -16,11 +16,9 @@ class RandomWalkLoss(nn.Module):
         self.targetM = self.rw_target[self.indices]
 
     def forward(self, z1_features, z2_features, labels=None):
-        device = args.device 
 
         z = torch.cat((z1_features, z2_features), dim=0)
 
-        bs = z1_features.shape[0]
         z = F.normalize(z, p=2., dim=1)
 
         sim = torch.mm(z, z.T) / self.temperature
@@ -28,8 +26,6 @@ class RandomWalkLoss(nn.Module):
         sim = torch.exp(sim)
 
         sim = sim - torch.diag(torch.diag(sim))
-
-        degree = torch.diag(sim.sum(dim=1))
 
         rw = torch.diag(1./(sim.sum(dim=1))) @ sim
 
