@@ -32,6 +32,51 @@ class RandomWalkLoss(nn.Module):
         loss = (rw[self.indices]-self.targetM).pow(2).sum()
 
         return loss
+
+class RandomWalkGCNLoss(nn.Module):
+    def __init__(self, temperature=0.4):
+        super(RandomWalkGCNLoss, self).__init__()
+
+        self.temperature = temperature
+        self.adjacency = torch.zeros((2*args.bs, 2*args.bs)).scatter_(0, torch.arange(2*args.bs).roll(args.bs).unsqueeze(0), 1).to(args.device) #cuda()
+        #precomputing indices of the upper triangular part 
+        ind = torch.triu_indices(2*args.bs, 2*args.bs,offset=1)
+        self.indices = (ind[0,:],ind[1,:])
+        #precomputing the target matrix
+        self.rwlaplacian = torch.diag(1./(self.adjacency.sum(dim=1))) @ self.adjacency
+        self.targetM = self.rwlaplacian[self.indices]
+
+    def forward(self, z1_features, z2_features, labels=None):
+
+        z = torch.cat((z1_features, z2_features), dim=0)
+
+        z = F.normalize(z, p=2., dim=1)
+
+        # Node Feature Masking : randomly put to 0 some elements of z
+        mask = torch.rand(z.shape).to(args.device)
+        mask = (mask > args.nfm).float()
+        z = z * mask
+        
+        # Diffusion
+        #z = z * self.rwlaplacian
+
+        sim = torch.mm(z, z.T) / self.temperature
+
+        sim = torch.exp(sim)
+
+        # Edge masking on the similarity matrix
+        mask = torch.rand(sim.shape).to(args.device)
+        mask = (mask > args.edgem).float()
+        sim = sim * mask
+        
+
+        sim = sim - torch.diag(torch.diag(sim))
+
+        rw = torch.diag(1./(sim.sum(dim=1))) @ sim
+
+        loss = (rw[self.indices]-self.targetM).pow(2).sum()
+
+        return loss
     
 class SupConLoss(nn.Module): # inspired by : https://github.com/HobbitLong/SupContrast/blob/master/losses.py
     def __init__(self, temperature=0.5, device="cuda:0"):

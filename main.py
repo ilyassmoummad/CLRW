@@ -5,7 +5,7 @@ from utils import TwoCropTransform
 from models import LinearClassifier
 from train import cifar10_train_backbone
 from train_utils import cifar10_train_linear
-from losses import RandomWalkLoss, SupConLoss
+from losses import RandomWalkLoss, SupConLoss, RandomWalkGCNLoss
 from args import args
 from models import RWResNet, model_dict
 import os
@@ -59,6 +59,8 @@ optimizer_ssl = torch.optim.SGD(optim_params, lr=args.lr,
 
 if args.simclr:
         criterion_ssl = SupConLoss(args.tau, device=args.device)
+elif args.gcn:
+        criterion_ssl = RandomWalkGCNLoss(args.tau)
 else:
         criterion_ssl = RandomWalkLoss(args.tau)
 
