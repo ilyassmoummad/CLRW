@@ -25,4 +25,9 @@ parser.add_argument("--epochs2", type=int, default=100) #nb of epochs of linear 
 parser.add_argument("--tau", type=float, default=1.0) #similarity temperature
 parser.add_argument("--schedule", type=int, default=[60, 80], nargs='*') #lr schedule for lin cls
 
+## GCN arguments 
+parser.add_argument("--gcn", action='store_true') #Use GCN model instead of SimCLR
+parser.add_argument("--nfm", type=float, default=0) # probability of masking a node feature
+parser.add_argument("--edgem", type=float, default=0) # probability of masking an edge
+
 args = parser.parse_args()
