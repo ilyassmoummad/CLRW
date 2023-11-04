@@ -2,6 +2,7 @@
 ---
 Authors : Ilyass Moummad, Bastien Pasdeloup, Nicolas Farrugia
 ---
+Presented @ Graph Signal Processing Workshop 2023 by Nicolas Farrugia
 
 **Overview of the framework.** Each image is augmented twice to produce two views. The edges represent probability transitions of pair of views. Thick edges represent high probability transitions (positive pairs) that are maximized toward 1, while dotted lines correspond to low probability transitions (negative pairs), minimized toward 0.\
 ![alt text](https://github.com/ilyassmoummad/CLRW/blob/master/CLRW_fig.png)
